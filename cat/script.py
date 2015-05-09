@@ -5,6 +5,10 @@ __all__ = ['Script']
 
 
 class Script:
+    """
+    Piece of code executed when an answer matches a pattern
+    """
+
     __slots__ = ['fn', 'listeners', 'pattern']
 
     def __init__(self, fn: callable, pattern, listeners: list=()):

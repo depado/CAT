@@ -32,16 +32,25 @@ class RegexContextToken(TokenEnum):
 
 
 class State(Enum):
+    """
+    The state of the lexer
+    """
+
     def __init__(self, token_set):
         self.token_set = token_set
 
-    DEFAULT = DefaultContextToken
-    REGEX_DEF = RegexDefinitionContextToken
-    REGEX = RegexContextToken
+    DEFAULT = DefaultContextToken            # Outside braces
+    REGEX_DEF = RegexDefinitionContextToken  # Between opening brace and colon
+    REGEX = RegexContextToken                # Between colon and closing brace
 
 
 def lex(s: str) -> list:
-    atoms = []
+    """
+    Chop a given string into tokens to match a semi regular
+    expression pattern
+    """
+
+    tokens = []
     braces_opened = 0
     state = State.DEFAULT
 
@@ -58,7 +67,7 @@ def lex(s: str) -> list:
                         break
 
                     token = Token(t, m)
-                    atoms.append(token)
+                    tokens.append(token)
                     break
 
         elif state == State.REGEX_DEF:
@@ -72,7 +81,7 @@ def lex(s: str) -> list:
                         state = State.REGEX
 
                     token = Token(t, m)
-                    atoms.append(token)
+                    tokens.append(token)
                     break
 
         elif state == State.REGEX:
@@ -80,6 +89,7 @@ def lex(s: str) -> list:
                 m = t.pattern.match(s)
 
                 if m is not None:
+                    # Pop out the matched string
                     s = s[m.end():]
 
                     if t == state.token_set.LBRACE:
@@ -95,16 +105,20 @@ def lex(s: str) -> list:
                             t = RegexContextToken.REGEXCHAR
 
                     token = Token(t, m)
-                    atoms.append(token)
+                    tokens.append(token)
                     break
 
     if state != State.DEFAULT:
         raise SyntaxError("Unbalanced braces")
 
-    return atoms
+    return tokens
 
 
 def parse(s: str):
+    """
+    Transform a simple string into a regular expression
+    """
+
     tokens = lex(s)
     pattern = ''
 
@@ -118,15 +132,18 @@ def parse(s: str):
             if tokens[0].type == RegexDefinitionContextToken.IDENT and\
                tokens[1].type == RegexDefinitionContextToken.COLON:
 
-                groupname = tokens.pop(0).match.group(0)
+                group_name = tokens.pop(0).match.group(0)
                 tokens.pop(0)
 
                 regex = ''
                 while tokens[0].type == RegexContextToken.REGEXCHAR:
                     regex += tokens.pop(0).match.group(0)
+
+                    # Needed because otherwise IndexError is raised,
+                    # interrupting the whole loop
                     if not tokens:
                         break
-                pattern += '(?P<{name}>{regex})'.format(name=groupname, regex=regex)
+                pattern += '(?P<{name}>{regex})'.format(name=group_name, regex=regex)
 
         except IndexError:
             break

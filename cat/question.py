@@ -10,7 +10,10 @@ __all__ = ['Question', 'UnknownQuery']
 
 
 class UnknownQuery(SyntaxError):
-    pass
+    """
+    Raised when the answer to a question does not match any
+    of it's script pattern
+    """
 
 
 class Question:

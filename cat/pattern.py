@@ -52,6 +52,7 @@ def lex(s: str) -> list:
 
     tokens = []
     braces_opened = 0
+    regex_def_tokens = 0
     state = State.DEFAULT
 
     while s:
@@ -71,6 +72,8 @@ def lex(s: str) -> list:
                     break
 
         elif state == State.REGEX_DEF:
+            regex_def_tokens += 1
+
             for t in state.token_set:
                 m = t.pattern.match(s)
 
@@ -79,6 +82,7 @@ def lex(s: str) -> list:
 
                     if t == state.token_set.COLON:
                         state = State.REGEX
+                        regex_def_tokens = 0
 
                     token = Token(t, m)
                     tokens.append(token)
@@ -144,6 +148,18 @@ def parse(s: str):
                     if not tokens:
                         break
                 pattern += '(?P<{name}>{regex})'.format(name=group_name, regex=regex)
+
+            else:
+                tokens.pop(0)
+                regex = ''
+                while tokens[0].type == RegexContextToken.REGEXCHAR:
+                    regex += tokens.pop(0).match.group(0)
+
+                    # Needed because otherwise IndexError is raised,
+                    # interrupting the whole loop
+                    if not tokens:
+                        break
+                pattern += regex
 
         except IndexError:
             break

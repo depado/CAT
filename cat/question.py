@@ -44,14 +44,24 @@ class Question:
 
         answer = input(self.text)
 
+        return self.execute_matching_script(answer)
+        
+    def execute_matching_script(answer: str):
+        """
+        Return the result of the script which pattern
+        match the answer.
+        
+        :param answer: The answer to match
+        """
+        
         for script in self.scripts:
             m = script.pattern.match(answer)
 
             if m is not None:
                 return script.execute(m)
-
+                
         raise UnknownQuery('Unmatched answer {!r}'.format(answer))
-
+        
     def script(self, expr: str, *flags):
         """
         Instantiate a new script.

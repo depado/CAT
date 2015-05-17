@@ -46,7 +46,7 @@ class Question:
 
         return self.execute_matching_script(answer)
         
-    def execute_matching_script(answer: str):
+    def execute_matching_script(self, answer: str):
         """
         Return the result of the script which pattern
         match the answer.

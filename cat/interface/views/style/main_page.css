@@ -1,0 +1,55 @@
+body
+{
+  background: url("../asset/background.png") fixed no-repeat center;
+  background-size: 100vw 100vw;
+
+  text-align: center;
+}
+
+#icon
+{
+  position: relative;
+  top: 10vh;
+}
+
+form
+{
+  position: relative;
+  top: 20vh;
+}
+
+form > input#query
+{
+  margin-left: 0;
+  padding: .2em;
+  padding-left: 1em;
+
+  width: 30vw;
+  height: 2.4em;
+
+  border: 0px solid #FFF;
+  border-radius: 3px 0 0 3px;
+}
+
+form > button#submit
+{
+  position: relative;
+  left: -0.4em;
+  top: .2em;
+
+  padding: 0;
+  margin-right: 0;
+
+  height: 2.8em;
+  width: 3em;
+
+  border: 0px solid #00B86B;
+  background-color: #00B86B;
+  border-radius: 0 3px 3px 0;
+}
+
+form > button#submit > img
+{
+  width: 1.5em;
+  height: 1.5em;
+}

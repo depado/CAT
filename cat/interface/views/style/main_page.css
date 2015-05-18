@@ -1,7 +1,7 @@
 body
 {
   background: url("../asset/background.png") fixed no-repeat center;
-  background-size: 100vw 100vw;
+  background-size: 100% 100%;
 
   text-align: center;
 }
